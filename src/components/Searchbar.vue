@@ -1,9 +1,8 @@
 <template>
-  <div id="bar">
+  <div>
     <button id="menu-btn" type="button"><img id="menu-img" alt="Menu" src="https://imgur.com/1A4zm0A.png"></button>
-    <input id="search" type="text" placeholder="Search for locations"/>
+    <input id="search" type="text" placeholder="搜尋店家 Search for locations"/>
     <button id="search-btn"><img id="menu-img" alt="Menu" src="https://i.imgur.com/RUHKWNZ.png"></button>
-    
   </div>
 </template>
 
@@ -24,10 +23,10 @@
 </script>
 
 <style scoped>
-#bar {
+/* #bar {
   width: 65%;
   border-color: #FDFDFD;
-}
+} */
 #menu-img {
   width: 100%;
   vertical-align: middle;
@@ -44,7 +43,8 @@
   vertical-align: middle;
   height: 40px;
   margin: 10px 0px 10px 10px;
+  padding: 0 10px;
   font-size: 18px;
-  width: calc(100% - 148px);
+  width: calc(100% - 168px);
 }
 </style>

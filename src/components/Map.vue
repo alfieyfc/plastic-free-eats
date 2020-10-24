@@ -1,24 +1,34 @@
 <template>
     <div id="map"></div>
-    <Searchbar id="searchbar"/>
-    <div id="ui" v-if="dev">
-        <h1>Your coords</h1>
-        <!-- <p> {{ coords.latitude }} Lat, {{ coords.longitude }} Long</p> -->
-        <p> {{ coords.lat }} Lat, {{ coords.lng }} Long</p>
+    <Searchbar class="searchbar"/>
+    <div v-if="showinfo">
+        <PlaceInfo class="info" :place="placemarker"/>
     </div>
-</template>
+</template> 
 
 <script>
 const {Loader} = require('google-maps');
 import Searchbar from './Searchbar.vue'
+import PlaceInfo from './PlaceInfo.vue'
 
 export default {
     components: {
-        Searchbar
+        Searchbar,
+        PlaceInfo
     },
+    prop: {
+        },
     data() {
         return {
-            dev: false,
+            showinfo: false,
+            placemarker: {
+                position: {
+                    lat: Number, 
+                    lng: Number
+                },
+                icon: String,
+                title: String,
+            },  
             coords: {
                 latitude: 0,
                 longitude: 0
@@ -31,31 +41,47 @@ export default {
             navigator.geolocation.watchPosition(position => {
                 this.coords = position.coords;
                 this.coords = {lat: 25.061804, lng: 121.484142 };
+                const that = this
                 loader.load().then(function (google) {
                     const map = new google.maps.Map(document.getElementById('map'), {
                         center: {lat: position.coords.latitude, lng: position.coords.longitude},
                         // center: {lat: 25.061804, lng: 121.484142 },
-                        zoom: 17,
+                        zoom: 12,
                     });
                     
-                    const mark = new google.maps.Marker({
-                        position:  {lat: 25.061762, lng: 121.484143 },
+                    const marker = new google.maps.Marker({
+                        position:  {lat: 25.061762, lng: 121.484143},
                         icon: "https://i.imgur.com/QtyZUwk.png",
                         map,
-                        title: "unpackaged.U°Ó©±",
+                        title: 'unpackaged.Uå•†åº—',
                     });
-                    console.log(mark)
+                    const infowindow = new google.maps.InfoWindow({
+                        content: "hello world",
+                    });
+
+                    marker.addListener('click', () => {
+                        infowindow.open(marker.get("map"), marker);
+                        that.placemarker = {
+                            position: marker.position,
+                            icon: marker.icon,
+                            title: marker.title
+                        }
+                        that.showinfo = true
+                    })
                 });
             })
-
         }else{ 
             console.log("Geolocation is not supported by this browser");
         }
+    },
+    methods: {
+
     }
 }
 </script>
 
 <style scoped>
+
 #map {
     position: absolute;
     height: 100%;
@@ -64,13 +90,24 @@ export default {
     left: 0;
     z-index: 0;
 }
-#searchbar, #ui {
+.searchbar {
     position: relative;
     z-index: 1;
     background-color: #00994f;
     border: solid 3px;
     border-color: #FDFDFD;
     margin-top: 60px;
+    margin-right: 50%;
+    text-align: left;
+}
+
+.info, #temp {
+    position: relative;
+    z-index: 1;
+    background-color: #00994f;
+    border: solid 3px;
+    border-color: #FDFDFD;
+    margin-top: 160px;
     margin-right: 50%;
     text-align: left;
 }
